@@ -14,7 +14,6 @@ const TableUsers = (props) => {
   }, []);
   const getUsers = async (page) => {
     let res = await fetchAllUser(page);
-    console.log("check new res>>>>", res);
 
     if (res && res.data) {
       console.log(res);
