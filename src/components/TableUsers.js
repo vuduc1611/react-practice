@@ -5,7 +5,8 @@ import ReactPaginate from "react-paginate";
 import ModalAddNew from "./ModalAddNew";
 import ModalEditUser from "./ModalEditUser";
 import ModalConfirm from "./ModalConfirm";
-import _ from "lodash";
+import _, { debounce } from "lodash";
+import "./TableUser.scss";
 
 const TableUsers = (props) => {
   const [listUsers, setListUsers] = useState([]);
@@ -16,6 +17,10 @@ const TableUsers = (props) => {
   const [dataUserEdit, setDataUserEdit] = useState({});
   const [isShowModalDelete, setIsShowModalDelete] = useState(false);
   const [dataUserDelete, setDataUserDelete] = useState({});
+  const [sortField, setSortField] = useState("id");
+  const [sortBy, setSortBy] = useState("asc");
+  // const [keyword, setKeyword] = useState("");
+
   const handleClose = () => {
     setIsShowModalAddNew(false);
     setIsShowModalEdit(false);
@@ -67,6 +72,28 @@ const TableUsers = (props) => {
     cloneListUsers = cloneListUsers.filter((item) => item.id !== user.id);
     setListUsers(cloneListUsers);
   };
+
+  const handleSort = (sortBy, sortField) => {
+    setSortBy(sortBy);
+    setSortField(sortField);
+    let cloneListUsers = _.cloneDeep(listUsers);
+    cloneListUsers = _.orderBy(cloneListUsers, [sortField], [sortBy]);
+    setListUsers(cloneListUsers);
+  };
+
+  const handleSearch = debounce((event) => {
+    let term = event.target.value;
+    console.log(term);
+    if (term) {
+      let cloneListUsers = _.cloneDeep(listUsers);
+      cloneListUsers = cloneListUsers.filter((item) =>
+        item.email.includes(term)
+      );
+      setListUsers(cloneListUsers);
+    } else {
+      getUsers(1);
+    }
+  }, 300);
   return (
     <>
       <div className="my-3 add-new">
@@ -80,12 +107,48 @@ const TableUsers = (props) => {
           Add New User
         </button>
       </div>
+      <div className="col-4 my-3">
+        <input
+          className="form-control"
+          placeholder="Search user by email..."
+          // value={keyword}
+          onChange={(event) => handleSearch(event)}
+        />
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>id</th>
+            <th>
+              <div className="sort-header">
+                <span>ID</span>
+                <span>
+                  <i
+                    className="fa-solid fa-arrow-down-long"
+                    onClick={() => handleSort("desc", "id")}
+                  ></i>
+                  <i
+                    className="fa-solid fa-arrow-up-long"
+                    onClick={() => handleSort("asc", "id")}
+                  ></i>
+                </span>
+              </div>
+            </th>
             <th>Email</th>
-            <th>First Name</th>
+            <th>
+              <div className="sort-header">
+                <span>First Name</span>
+                <span>
+                  <i
+                    className="fa-solid fa-arrow-down-long"
+                    onClick={() => handleSort("desc", "first_name")}
+                  ></i>
+                  <i
+                    className="fa-solid fa-arrow-up-long"
+                    onClick={() => handleSort("asc", "first_name")}
+                  ></i>
+                </span>
+              </div>
+            </th>
             <th>Last Name</th>
             <th>Actions</th>
           </tr>
