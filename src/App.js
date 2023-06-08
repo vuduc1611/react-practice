@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 import { handleRefresh } from "./redux/actions/userAction";
 function App() {
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (localStorage.getItem("token")) {
       dispatch(handleRefresh());
