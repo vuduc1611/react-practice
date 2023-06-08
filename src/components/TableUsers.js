@@ -192,7 +192,7 @@ const TableUsers = (props) => {
             className="btn btn-success"
             onClick={() => setIsShowModalAddNew(true)}
           >
-            <i class="fa-solid fa-circle-plus"></i>&nbsp; Add New
+            <i className="fa-solid fa-circle-plus"></i>&nbsp; Add New
           </button>
         </div>
       </div>
